@@ -19,6 +19,9 @@ SCRIPTNAME=`basename $0`
 KERN_MAJOR_VERSION=`uname -r |  awk -F"." '{ print $1 }'`
 KERN_MINOR_VERSION=`uname -r |  awk -F"." '{ print $2 }'`
 
+GPG_PRELUDE="gpg -q --keyring gnu-keyring.gpg --verify"
+MAKE_CMD="make -j2"
+
 # if this is non-zero, then we have a 64 bit kernel.
 s4BIT=`uname -a | grep -c x86_64`
 
@@ -50,15 +53,15 @@ export SRC=$PREFIX/src
 # other tools or older versions...
 #################################################
 # http://gcc.gnu.org/
-#export GCC_VERSION=4.3.0
-export GCC_VERSION=4.2.3
+export GCC_VERSION=4.3.2
+#export GCC_VERSION=4.2.3
 
 # http://www.gnu.org/software/binutils/
-#export BINUTILS_VERSION=2.18
-export BINUTILS_VERSION=2.17
+export BINUTILS_VERSION=2.19
+#export BINUTILS_VERSION=2.17
 
 # http://sourceware.org/gdb/
-export GDB_VERSION=6.7.1
+export GDB_VERSION=6.8
 
 # http://expat.sourceforge.net/
 export EXPAT_VERSION=2.0.1
@@ -73,7 +76,7 @@ export NEWLIB_VERSION=1.16.0
 
 # other vars
 # FROM: http://gcc.gnu.org/mirrors.html
-GNU_KEYS="745C015A B75C61B8 902C9419 E0A38377 FF325CF3"
+#GNU_KEYS="745C015A B75C61B8 902C9419 E0A38377 FF325CF3 F71EDF1C 4AE55E93"
 
 export DIRS_TO_CLEAN="$BUILD 
                       $PREFIX/share 
@@ -168,22 +171,16 @@ then
     mkdir $BUILD
 fi
 
-# Check for GNU signature keys, import if necessary.
-for i in $GNU_KEYS 
-do
-  gpg -q --list-keys $i
-  if [ $? -ne "$SUCCESS" ]
-  then
-      infomsg "fail to find key $i, attempting import."
-      gpg -q --recv-keys --keyserver pgp.mit.edu $i
+#      command="gpg -q --recv-keys --keyserver pgp.mit.edu $i"
+#      command="gpg --import gnu-keyring.gpg"
+# Update gnu keyring
+      command="pushd $HOME/.gnupg"
+      excmd "$command"
+      command="wget ftp://ftp.gnu.org/gnu/gnu-keyring.gpg"
+      excmd "$command"
+      command="popd"
+      excmd "$command"
 
-      if  [ $? -ne "$SUCCESS" ] 
-      then
-	  infomsg "exiting $0"
-	  infomsg "Fail importing gnu key for file integrity verification. May be problem later..."
-      fi
-  fi
-done
 
 ############################################################
 # change to SRC directory and download needed distributions.
@@ -200,19 +197,20 @@ then
     command="wget ftp://ftp.gnu.org/gnu/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.bz2.sig"
     excmd "$command"
 fi
-command="gpg -q --verify gcc-$GCC_VERSION.tar.bz2.sig"
+# command="gpg -q --keyring gnu-keyring.gpg --verify gcc-$GCC_VERSION.tar.bz2.sig"
+command="$GPG_PRELUDE gcc-$GCC_VERSION.tar.bz2.sig"
 excmd "$command"
 
 # binutils is  as  and  ld  and others for gnu gcc
 infomsg "wget binutils $BINUTILS_VERSION - utilities for cross compiling"
-if [ ! -e binutils-$BINUTILS_VERSION.tar.bz2 || ! -e binutils-$BINUTILS_VERSION.tar.bz2.sig ];
+if [ ! -e binutils-$BINUTILS_VERSION.tar.bz2 ] || [ ! -e binutils-$BINUTILS_VERSION.tar.bz2.sig ];
 then
     command="wget ftp://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2"
     excmd "$command"
     command="wget ftp://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2.sig"
     excmd "$command"
 fi
-command="gpg -q --verify binutils-$BINUTILS_VERSION.tar.bz2.sig"
+command="$GPG_PRELUDE binutils-$BINUTILS_VERSION.tar.bz2.sig"
 excmd "$command"
 
 # get expat XML parse libs for gdb
@@ -232,7 +230,7 @@ then
     command="wget ftp://ftp.gnu.org/gnu/gdb/gdb-$GDB_VERSION.tar.bz2.sig"
     excmd "$command"
 fi
-command="gpg -q --verify gdb-$GDB_VERSION.tar.bz2.sig"
+command="$GPG_PRELUDE gdb-$GDB_VERSION.tar.bz2.sig"
 excmd "$command"
 
 
@@ -319,10 +317,10 @@ cd $BUILD/binutils
 command="$BUILD/binutils-$BINUTILS_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft  --enable-languages=\"c,c++\" "
 excmd "$command"
 
-command="make -j2"
+command="$MAKE_CMD"
 excmd "$command"
 
-command="make install"
+command="$MAKE_CMD install"
 excmd "$command"
 
 ##### GCC ################################
@@ -335,9 +333,9 @@ command="$BUILD/gcc-$GCC_VERSION/configure --target=arm-elf --prefix=$PREFIX --e
 excmd "$command"
 
 
-command="make -j2 all-gcc"
+command="$MAKE_CMD all-gcc"
 excmd "$command"
-command="make install-gcc"
+command="$MAKE_CMD install-gcc"
 excmd "$command"
 
 
@@ -349,10 +347,10 @@ cd $BUILD/newlib
 command="$BUILD/newlib-$NEWLIB_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft"
 excmd "$command"
 
-command="make -j2"
+command="$MAKE_CMD"
 excmd "$command"
 
-command="make install"
+command="$MAKE_CMD install"
 excmd "$command"
 
 #####  GCC2 ################################
@@ -363,10 +361,10 @@ cd $BUILD/gcc2
 command="$BUILD/gcc-$GCC_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft --enable-languages=\"c,c++\" --with-newlib --with-headers=$BUILD/newlib-$NEWLIB_VERSION/newlib/libc/include"
 excmd "$command"
 
-command="make -j2"
+command="$MAKE_CMD"
 excmd "$command"
 
-command="make install"
+command="$MAKE_CMD install"
 excmd "$command"
 
 ### expat ##############################
@@ -376,10 +374,10 @@ cd $BUILD/expat
 command="$BUILD/expat-$EXPAT_VERSION/configure --prefix=$PREFIX"
 excmd "$command"
 
-command="make -j2"
+command="$MAKE_CMD"
 excmd "$command"
 
-command="make install"
+command="$MAKE_CMD install"
 excmd "$command"
 
 ####  GDB  #################################
@@ -390,10 +388,10 @@ cd $BUILD/gdb
 command="$BUILD/gdb-$GDB_VERSION/configure --target=arm-elf --prefix=$PREFIX --with-libexpat-prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft"
 excmd "$command"
 
-command="make -j2"
+command="$MAKE_CMD"
 excmd "$command"
 
-command="make install"
+command="$MAKE_CMD install"
 excmd "$command"
 
 ###  INSIGHT ##################################
@@ -403,9 +401,9 @@ excmd "$command"
 #rm -rf *
 #command="$BUILD/insight-$INSIGHT_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft  --with-newlib --with-headers=$BUILD/newlib-$NEWLIB_VERSION/newlib/libc/include"
 #excmd "$command"
-#command="make -j2"
+#command="$MAKE_CMD"
 #excmd "$command"
-#command="make install"
+#command="$MAKE_CMD install"
 #excmd "$command"
 
 echo

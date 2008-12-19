@@ -70,7 +70,8 @@ echo BUILD is $BUILD
 # environment
 #################################################
 # export OOCD_VERSION=517
-export OOCD_VERSION=709
+#export OOCD_VERSION=709
+export OOCD_VERSION=1257
 
 ###########################
 # other vars

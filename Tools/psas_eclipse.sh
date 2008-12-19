@@ -53,7 +53,7 @@ export SOURCES=$PREFIX/Sources
 #################################################
 # see http://www.eclipse.org/downloads
 #"Ganymede Classic"
-export ECLIPSE_VERSION=3.4
+export ECLIPSE_VERSION=3.4.1
 export ECLIPSE_64="eclipse-SDK-$ECLIPSE_VERSION-linux-gtk-x86_64.tar.gz"
 export ECLIPSE_32="eclipse-SDK-$ECLIPSE_VERSION-linux-gtk.tar.gz"
 
@@ -153,12 +153,12 @@ then
 
     if [ ! -e $SOURCES/$ECLIPSE_64 ];
     then
-	command="wget http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4-200806172000/$ECLIPSE_64"
+	command="wget http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4.1-200809111700/$ECLIPSE_64"
 	excmd "$command"
     fi
     if [ ! -e $SOURCES/$ECLIPSE_64.md5 ]; 
     then
-	command="wget http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4-200806172000/checksum/$ECLIPSE_64.md5"
+	command="wget http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4.1-200809111700/checksum/$ECLIPSE_64.md5"
 	excmd "$command"
     fi
 
@@ -178,13 +178,13 @@ else
     infomsg "32 BIT LINUX VERSION OF ECLIPSE"
 
     if [ ! -e $SOURCES/$ECLIPSE_32 ];
-    then
-	command="wget http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4-200806172000/$ECLIPSE_32"
+    then 
+	command="wget http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4.1-200809111700/$ECLIPSE_32"
 	excmd "$command"
     fi
     if [ ! -e $SOURCES/$ECLIPSE_32.md5 ]; 
     then
-	command="wget http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4-200806172000/checksum/$ECLIPSE_32.md5"
+	command="wget http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4.1-200809111700/checksum/$ECLIPSE_32.md5"
 	excmd "$command"
     fi
 
