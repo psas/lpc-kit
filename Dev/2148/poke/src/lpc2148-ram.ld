@@ -1,0 +1,1 @@
+../../common/lpc2148-ram.ld

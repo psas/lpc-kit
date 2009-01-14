@@ -1,0 +1,34 @@
+hwsys.o: hwsys.c include/lpc214x.h include/types.h include/debug.h \
+  include/pll.h include/./lpc214x.h include/./types.h include/mam.h \
+  include/./mam.h include/hwsys.h
+conio.o: conio.c include/conio.h include/lpc214x.h include/types.h \
+  include/helpers.h include/hwsys.h include/types.h include/lpc214x.h \
+  include/helpers.h
+printf.o: printf.c include/conio.h include/lpc214x.h include/types.h \
+  include/helpers.h
+pll.o: pll.c include/lpc214x.h include/pll.h include/./lpc214x.h \
+  include/./types.h include/interrupts.h include/./lpc-timer.h \
+  include/./types.h include/./lpc214x.h include/mam.h include/./mam.h \
+  include/types.h
+helpers.o: helpers.c
+mam.o: mam.c include/lpc214x.h include/mam.h include/./lpc214x.h \
+  include/./mam.h include/./types.h
+interrupts.o: interrupts.c include/interrupts.h include/./lpc214x.h \
+  include/./types.h include/./lpc-timer.h include/./types.h \
+  include/./lpc214x.h include/lpc214x.h include/types.h \
+  include/./lpc-timer.h include/./lpc-rtc.h
+olimex.o: olimex.c include/olimex.h include/lpc214x.h include/lpc214x.h
+lpc-serial.o: lpc-serial.c include/lpc-serial.h include/lpc214x.h \
+  include/types.h include/types.h include/lpc214x.h
+lpc-spi.o: lpc-spi.c include/lpc-spi.h include/types.h include/lpc214x.h \
+  include/lpc-serial.h include/lpc214x.h include/types.h \
+  include/helpers.h
+lpc-timer.o: lpc-timer.c include/lpc-timer.h include/types.h \
+  include/lpc214x.h
+lpc-watchdog.o: lpc-watchdog.c include/lpc-watchdog.h include/types.h \
+  include/interrupts.h include/./lpc214x.h include/./types.h \
+  include/./lpc-timer.h include/./types.h include/./lpc214x.h \
+  include/lpc214x.h include/types.h include/interrupts.h
+lpc-rtc.o: lpc-rtc.c include/lpc-rtc.h include/types.h include/types.h \
+  include/lpc214x.h include/lpc-serial.h include/lpc214x.h \
+  include/helpers.h

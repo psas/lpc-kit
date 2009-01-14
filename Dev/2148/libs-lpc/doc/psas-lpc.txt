@@ -1,0 +1,28 @@
+
+
+2008/06/25 10:12:06
+
+
+libs-lpc directory contains sources and library
+development tools for libpsaslpc. This is an attempt
+to build a consitent development across mulitple sensor
+nodes.
+
+src:
+This directory holds the sources.
+ include:
+   include files for sources.
+
+
+doc:
+Directory for documetns
+
+
+lib:
+Directory for library. libpsaslpc
+
+
+
+
+
+

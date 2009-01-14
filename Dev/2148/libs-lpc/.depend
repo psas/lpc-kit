@@ -1,0 +1,41 @@
+hwsys.o: src/hwsys.c src/include/lpc214x.h src/include/types.h \
+  src/include/debug.h src/include/pll.h src/include/./lpc214x.h \
+  src/include/./types.h src/include/mam.h src/include/./mam.h \
+  src/include/hwsys.h
+printf.o: src/printf.c src/include/conio.h src/include/lpc214x.h \
+  src/include/types.h src/include/helpers.h
+conio.o: src/conio.c src/./include/conio.h src/./include/lpc214x.h \
+  src/./include/types.h src/./include/helpers.h src/include/hwsys.h \
+  src/include/types.h src/include/lpc214x.h src/include/helpers.h
+pll.o: src/pll.c src/./include/lpc214x.h src/./include/pll.h \
+  src/./include/./lpc214x.h src/./include/./types.h \
+  src/./include/interrupts.h src/./include/./lpc-timer.h \
+  src/./include/./types.h src/./include/./lpc214x.h src/./include/mam.h \
+  src/./include/./mam.h src/./include/types.h
+helpers.o: src/helpers.c
+mam.o: src/mam.c src/./include/lpc214x.h src/./include/mam.h \
+  src/./include/./lpc214x.h src/./include/./mam.h src/./include/./types.h
+lpc-serial.o: src/lpc-serial.c src/./include/lpc-serial.h \
+  src/./include/lpc214x.h src/./include/types.h src/./include/types.h \
+  src/./include/lpc214x.h
+lpc-spi.o: src/lpc-spi.c src/./include/lpc-spi.h src/include/types.h \
+  src/include/lpc214x.h src/include/lpc-serial.h src/include/lpc214x.h \
+  src/include/types.h src/include/helpers.h
+lpc-rtc.o: src/lpc-rtc.c src/./include/lpc-rtc.h src/./include/types.h \
+  src/include/types.h src/include/lpc214x.h src/include/lpc-serial.h \
+  src/include/lpc214x.h src/include/types.h src/include/helpers.h
+lpc-timer.o: src/lpc-timer.c src/./include/lpc-timer.h \
+  src/./include/types.h src/./include/lpc214x.h
+lpc-watchdog.o: src/lpc-watchdog.c src/./include/lpc-watchdog.h \
+  src/./include/types.h src/./include/interrupts.h \
+  src/./include/./lpc214x.h src/./include/./types.h \
+  src/./include/./lpc-timer.h src/./include/./types.h \
+  src/./include/./lpc214x.h src/./include/lpc214x.h src/./include/types.h \
+  src/./include/interrupts.h
+interrupts.o: src/interrupts.c src/./include/interrupts.h \
+  src/./include/./lpc214x.h src/./include/./types.h \
+  src/./include/./lpc-timer.h src/./include/./types.h \
+  src/./include/./lpc214x.h src/./include/lpc214x.h src/./include/types.h \
+  src/include/./lpc-timer.h src/include/./lpc-rtc.h src/include/./types.h
+olimex.o: src/olimex.c src/./include/olimex.h src/./include/lpc214x.h \
+  src/./include/lpc214x.h

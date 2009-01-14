@@ -1,0 +1,31 @@
+
+/*
+ * timer-demo.h
+ */
+
+#ifndef _TIMER_DEMO_H
+#define _TIMER_DEMO_H
+
+
+#include "types.h"
+
+/*
+ * initialize
+ * -----------------------------------------------
+ * initialize the lpc2148 pll 
+ * cpu interrupts
+ * the uart0 serial port
+ * the rtc VIC interrupt
+ */
+void initialize(void);
+
+
+void TIMER0_Handler (void)   __attribute__ ((interrupt("IRQ")));
+
+void IRQ_Routine (void)   __attribute__ ((interrupt("IRQ")));
+void FIQ_Routine (void)   __attribute__ ((interrupt("FIQ")));
+void SWI_Routine (void)   __attribute__ ((interrupt("SWI")));
+void UNDEF_Routine (void) __attribute__ ((interrupt("UNDEF")));
+
+
+#endif
