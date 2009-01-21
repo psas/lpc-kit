@@ -82,8 +82,8 @@ int main (void) {
 
     // Test 2;
     // serial i/o
-    puts("Type something to continue. LOCAL ECHO ON?\r");
-    echo_line();
+//    puts("Type something to continue. LOCAL ECHO ON?\r");
+ //   echo_line();
 
     // Test 3:
     // interrupts.
