@@ -19,7 +19,8 @@ SCRIPTNAME=`basename $0`
 KERN_MAJOR_VERSION=`uname -r |  awk -F"." '{ print $1 }'`
 KERN_MINOR_VERSION=`uname -r |  awk -F"." '{ print $2 }'`
 
-GPG_PRELUDE="gpg -q --keyring gnu-keyring.gpg --verify"
+GPG_KEYRING=/tmp/gnu-keyring.gpg
+GPG_PRELUDE="gpg -q --keyring $GPG_KEYRING --verify"
 MAKE_CMD="make -j2"
 
 # if this is non-zero, then we have a 64 bit kernel.
@@ -174,11 +175,7 @@ fi
 #      command="gpg -q --recv-keys --keyserver pgp.mit.edu $i"
 #      command="gpg --import gnu-keyring.gpg"
 # Update gnu keyring
-      command="pushd $HOME/.gnupg"
-      excmd "$command"
-      command="wget ftp://ftp.gnu.org/gnu/gnu-keyring.gpg"
-      excmd "$command"
-      command="popd"
+      command="wget -nv -O $GPG_KEYRING ftp://ftp.gnu.org/gnu/gnu-keyring.gpg"
       excmd "$command"
 
 
