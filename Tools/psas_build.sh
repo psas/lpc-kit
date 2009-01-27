@@ -188,13 +188,13 @@ fi
 cd $SRC
 
 # the ubiquitous gnu compiler collection (gcc)
-infomsg "wget gcc $GCC_VERSION - gnu compiler"
+infomsg "wget -nv gcc $GCC_VERSION - gnu compiler"
 if [ ! -e gcc-$GCC_VERSION.tar.bz2 ] || [ ! -e gcc-$GCC_VERSION.tar.bz2.sig ];
 then
-    command="wget ftp://ftp.gnu.org/gnu/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.bz2"
+    command="wget -nv ftp://ftp.gnu.org/gnu/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.bz2"
     excmd "$command"
 
-    command="wget ftp://ftp.gnu.org/gnu/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.bz2.sig"
+    command="wget -nv ftp://ftp.gnu.org/gnu/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.bz2.sig"
     excmd "$command"
 fi
 # command="gpg -q --keyring gnu-keyring.gpg --verify gcc-$GCC_VERSION.tar.bz2.sig"
@@ -202,32 +202,32 @@ command="$GPG_PRELUDE gcc-$GCC_VERSION.tar.bz2.sig"
 excmd "$command"
 
 # binutils is  as  and  ld  and others for gnu gcc
-infomsg "wget binutils $BINUTILS_VERSION - utilities for cross compiling"
+infomsg "wget -nv binutils $BINUTILS_VERSION - utilities for cross compiling"
 if [ ! -e binutils-$BINUTILS_VERSION.tar.bz2 ] || [ ! -e binutils-$BINUTILS_VERSION.tar.bz2.sig ];
 then
-    command="wget ftp://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2"
+    command="wget -nv ftp://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2"
     excmd "$command"
-    command="wget ftp://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2.sig"
+    command="wget -nv ftp://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2.sig"
     excmd "$command"
 fi
 command="$GPG_PRELUDE binutils-$BINUTILS_VERSION.tar.bz2.sig"
 excmd "$command"
 
 # get expat XML parse libs for gdb
-infomsg "wget expat version: $EXPAT_VERSION - expat XML parse libs for gdb"
+infomsg "wget -nv expat version: $EXPAT_VERSION - expat XML parse libs for gdb"
 if  [ ! -e expat-$EXPAT_VERSION.tar.gz ];
 then
-    command="wget http://downloads.sourceforge.net/expat/expat-$EXPAT_VERSION.tar.gz"
+    command="wget -nv http://downloads.sourceforge.net/expat/expat-$EXPAT_VERSION.tar.gz"
     excmd "$command"
 fi
 
 # get gdb
-infomsg "wget gdb $GDB_VERSION - gnu debugger"
+infomsg "wget -nv gdb $GDB_VERSION - gnu debugger"
 if  [ ! -e gdb-$GDB_VERSION.tar.bz2 ] || [ ! -e gdb-$GDB_VERSION.tar.bz2.sig  ];
 then
-    command="wget ftp://ftp.gnu.org/gnu/gdb/gdb-$GDB_VERSION.tar.bz2"
+    command="wget -nv ftp://ftp.gnu.org/gnu/gdb/gdb-$GDB_VERSION.tar.bz2"
     excmd "$command"
-    command="wget ftp://ftp.gnu.org/gnu/gdb/gdb-$GDB_VERSION.tar.bz2.sig"
+    command="wget -nv ftp://ftp.gnu.org/gnu/gdb/gdb-$GDB_VERSION.tar.bz2.sig"
     excmd "$command"
 fi
 command="$GPG_PRELUDE gdb-$GDB_VERSION.tar.bz2.sig"
@@ -235,10 +235,10 @@ excmd "$command"
 
 
 # get newlib, an embedded c library
-infomsg "wget newlib - embedded c library"
+infomsg "wget -nv newlib - embedded c library"
 if  [ ! -e newlib-$NEWLIB_VERSION.tar.gz ];
 then
-    command="wget ftp://sources.redhat.com/pub/newlib/newlib-$NEWLIB_VERSION.tar.gz"
+    command="wget -nv ftp://sources.redhat.com/pub/newlib/newlib-$NEWLIB_VERSION.tar.gz"
     excmd "$command"
 fi
 
@@ -246,7 +246,7 @@ fi
 infomsg "arm configuration file."
 if  [ ! -e t-arm-elf ];
 then
-    command="wget http://www.gnuarm.com/t-arm-elf"
+    command="wget -nv http://www.gnuarm.com/t-arm-elf"
     excmd "$command"
 fi
 
@@ -254,8 +254,8 @@ fi
 # get insight debugger
 #if  [ ! -e insight-$INSIGHT_VERSION.tar.bz2 ]
 #then
-#    wget ftp://sourceware.org/pub/insight/releases/insight-$INSIGHT_VERSION.tar.bz2
-#    wget ftp://sourceware.org/pub/insight/releases/md5.sum
+#    wget -nv ftp://sourceware.org/pub/insight/releases/insight-$INSIGHT_VERSION.tar.bz2
+#    wget -nv ftp://sourceware.org/pub/insight/releases/md5.sum
 #fi
 #SUM=`cat md5.sum | sed 's/ .*//'`
 #checkmd5=`md5sum insight-6.7.1.tar.bz2 | sed 's/ .*//'`

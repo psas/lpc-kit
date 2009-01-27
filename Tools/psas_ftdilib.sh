@@ -265,7 +265,7 @@ if [ "$install" -eq 1 ]; then
 
     # get the ftdi library
     ftdi_file="libftd2xx0.4.13.tar.gz"
-    command="wget http://www.ftdichip.com/Drivers/D2XX/Linux/$ftdi_file"
+    command="wget -nv http://www.ftdichip.com/Drivers/D2XX/Linux/$ftdi_file"
 
     if [ ! -e $ftdi_file ]; then
 	excmd "$command"

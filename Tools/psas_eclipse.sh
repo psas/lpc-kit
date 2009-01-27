@@ -153,12 +153,12 @@ then
 
     if [ ! -e $SOURCES/$ECLIPSE_64 ];
     then
-	command="wget http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4.1-200809111700/$ECLIPSE_64"
+	command="wget -nv http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4.1-200809111700/$ECLIPSE_64"
 	excmd "$command"
     fi
     if [ ! -e $SOURCES/$ECLIPSE_64.md5 ]; 
     then
-	command="wget http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4.1-200809111700/checksum/$ECLIPSE_64.md5"
+	command="wget -nv http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4.1-200809111700/checksum/$ECLIPSE_64.md5"
 	excmd "$command"
     fi
 
@@ -179,12 +179,12 @@ else
 
     if [ ! -e $SOURCES/$ECLIPSE_32 ];
     then 
-	command="wget http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4.1-200809111700/$ECLIPSE_32"
+	command="wget -nv http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4.1-200809111700/$ECLIPSE_32"
 	excmd "$command"
     fi
     if [ ! -e $SOURCES/$ECLIPSE_32.md5 ]; 
     then
-	command="wget http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4.1-200809111700/checksum/$ECLIPSE_32.md5"
+	command="wget -nv http://mirrors.cat.pdx.edu/eclipse/eclipse/downloads/drops/R-3.4.1-200809111700/checksum/$ECLIPSE_32.md5"
 	excmd "$command"
     fi
 
