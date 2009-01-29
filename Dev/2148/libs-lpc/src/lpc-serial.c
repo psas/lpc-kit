@@ -87,7 +87,8 @@ char* serial_getline (void)  {
     U16 index=0;
     static char _LINEBUFFER[MAXBUFFER];
 
-    while(current != '\r' && index < MAXBUFFER-1) {
+//    while(current != '\r' && index < MAXBUFFER-1) {
+    while(current != '\n' && index < MAXBUFFER-1) {
 	current=serial_getchar();
 	_LINEBUFFER[index]=current;
 	++index;

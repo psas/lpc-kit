@@ -74,7 +74,7 @@ int main (void) {
     // start test, LED 1 lighted
     led2_off();
     led1_on();
-    puts("Hello from LPC2148\r");
+    puts("Hello from LPC2148\n");
 
     // Test 1:
     //  hit the buzzer....
@@ -82,12 +82,12 @@ int main (void) {
 
     // Test 2;
     // serial i/o
-//    puts("Type something to continue. LOCAL ECHO ON?\r");
- //   echo_line();
+    puts("Type something to continue. LOCAL ECHO ON?\n");
+    echo_line();
 
     // Test 3:
     // interrupts.
-    puts("Press a button to continue\r");
+    puts("Press a button to continue\n");
 
     while(!g_bpressed);
 
@@ -160,14 +160,14 @@ void initialize(void)  {
  */
 void echo_line(void) {
 
-    char* reply = "\recho: ";
+    char* reply = "\necho: ";
     char* echo;
 
     echo = serial_getline();
 
     puts(reply);
     puts(echo);
-    putchar('\r');
+    putchar('\n');
 }
 
 
@@ -181,7 +181,7 @@ void EINT0_Handler (void) {
 //    ISR_ENTRY();
 
     flash_led2(10);
-    puts("Button B2 pressed\r");
+    puts("Button B2 pressed\n");
     g_bpressed++;
 
     EXTINT      = 0xF;
@@ -199,7 +199,7 @@ void EINT2_Handler (void) {
 //    ISR_ENTRY();
 
     flash_led1(10);
-    puts("Button B1 pressed\r");
+    puts("Button B1 pressed\n");
     g_bpressed++;
 
     EXTINT      = 0XF;
