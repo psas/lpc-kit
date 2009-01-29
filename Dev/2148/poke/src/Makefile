@@ -1,10 +1,10 @@
+# Makefile for example lpc2148 project
 
-
-# Makefile for example project bob4
-# Calls two env vars 
-# 1) LPC_PROJ - location of projects
-# 2) LPC_DEV - location of PSAS Dev tree
-
+# Defaults build directories below, modify or override if the directory structure changes
+# LPC_DEV - location of PSAS Dev tree - the top-level directory lpc-kit/
+LPC_DEV		= ../../../..
+# LPC_PROJ - location of projects - i.e. lpc-kit/Dev/2148/
+LPC_PROJ	= ../..
 
 PROJECT		= poke
 TYPE		= 2148
