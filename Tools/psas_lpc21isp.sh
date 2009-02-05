@@ -34,7 +34,7 @@ normaltext="\033[0m"
 ############################
 #INSTALL DIRECTORIES
 board="2148"
-export PREFIX=$HOME/lpc-kit
+export PREFIX=$HOME/PSAS/LPCDEV
 export ISP=$PREFIX/LPC/$board/ISP
 export TOOLS=$PREFIX/Tools
 export SOURCES=$PREFIX/Sources
@@ -133,13 +133,16 @@ cd $ISP
 
 # go find at:
 # http://tech.groups.yahoo.com/group/lpc21isp/files/Beta%20versions/
-command="cp $SOURCES/lpc21isp_155.zip ."
+#command="cp $SOURCES/lpc21isp_155.zip ."
+command="cp $SOURCES/lpc21isp_163.zip ."
 excmd "$command"
 
-command="unzip ./lpc21isp_155.zip"
+#command="unzip ./lpc21isp_155.zip"
+command="unzip ./lpc21isp_163.zip"
 excmd "$command"
 
-command="make -f Makefile.gnu"
+# command="make -f Makefile.gnu"
+command="make"
 excmd "$command"
 
 infomsg "$SCRIPTNAME ended on `date`"
