@@ -53,8 +53,8 @@ export SRC=$PREFIX/src
 # other tools or older versions...
 #################################################
 # http://gcc.gnu.org/
-export GCC_VERSION=4.3.2
-#export GCC_VERSION=4.2.3
+#export GCC_VERSION=4.3.2
+export GCC_VERSION=4.2.3
 
 # http://www.gnu.org/software/binutils/
 export BINUTILS_VERSION=2.19
