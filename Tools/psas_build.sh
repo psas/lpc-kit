@@ -57,8 +57,8 @@ export PREFIX=/opt/cross
 export GCC_VERSION=4.2.1
 
 # http://www.gnu.org/software/binutils/
-#export BINUTILS_VERSION=2.19
-export BINUTILS_VERSION=2.17
+export BINUTILS_VERSION=2.19
+#export BINUTILS_VERSION=2.17
 
 # http://sourceware.org/gdb/
 export GDB_VERSION=6.6
