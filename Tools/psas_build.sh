@@ -5,13 +5,14 @@
 # This script gathers and compiles tools for
 # cross compiling and developing on the
 # lpc2148 olimex board.
+#
+# There are alternate methods on the psas website:
+# http://psas.pdx.edu/OlimexLPC2148Setup/
+#   This script is modeled after the secton:
+#   "Alternate Setup under Debian Linux" from
+#   Bdale Garbee.
 ##
 
-
-#####################################
-# some utility vars
-
-#status
 SUCCESS=0
 FAIL=42
 
@@ -42,11 +43,8 @@ normaltext="\033[0m"
 
 ############################
 #INSTALL DIRECTORIES
-board=2148
-export PREFIX=$HOME/lpc-kit/LPC/$board
-export BUILD=$PREFIX/build
-export SRC=$PREFIX/src
-
+export SRC=$HOME/lpc-kit/toolchain/src
+export PREFIX=/opt/cross
 
 #################################################
 # VERSIONS
@@ -55,43 +53,29 @@ export SRC=$PREFIX/src
 #################################################
 # http://gcc.gnu.org/
 #export GCC_VERSION=4.3.2
-export GCC_VERSION=4.2.3
+#export GCC_VERSION=4.2.3
+export GCC_VERSION=4.2.1
 
 # http://www.gnu.org/software/binutils/
-export BINUTILS_VERSION=2.19
-#export BINUTILS_VERSION=2.17
+#export BINUTILS_VERSION=2.19
+export BINUTILS_VERSION=2.17
 
 # http://sourceware.org/gdb/
-export GDB_VERSION=6.8
-
-# http://expat.sourceforge.net/
-export EXPAT_VERSION=2.0.1
+export GDB_VERSION=6.6
 
 # http://sourceware.org/newlib/
-export NEWLIB_VERSION=1.16.0
+export NEWLIB_VERSION=1.17.0
+#export NEWLIB_VERSION=1.16.0
+#export NEWLIB_VERSION=1.15.0
 
-##### Maybe Eclipse precludes using Insight
-##### 64 bit version of insight problematic!
-#export INSIGHT_VERSION=6.7.1
-########################################
+export DIRS_TO_CLEAN="$PREFIX/*\
+                      $SRC/target\
+                      $SRC/gcc-*\
+                      $SRC/newlib-*\
+                      $SRC/binutils-*\
+                      $SRC/gdb-*"
 
-# other vars
-# FROM: http://gcc.gnu.org/mirrors.html
-#GNU_KEYS="745C015A B75C61B8 902C9419 E0A38377 FF325CF3 F71EDF1C 4AE55E93"
-
-export DIRS_TO_CLEAN="$BUILD 
-                      $PREFIX/share 
-                      $PREFIX/man 
-                      $PREFIX/lib 
-                      $PREFIX/lib* 
-                      $PREFIX/info 
-                      $PREFIX/bin 
-                      $PREFIX/arm-elf 
-                      $PREFIX/include"
-
-########################################
 ######## FUNCTIONS #####################
-########################################
 
 ######### Exit status check function 
 ## Call with two args, the $? and string (a comment)
@@ -127,7 +111,7 @@ for i in $DIRS_TO_CLEAN
 do
     if [ -e $i ]
     then
-	rm -rf $i
+	sudo rm -rf $i
     fi
 done
 }
@@ -142,7 +126,6 @@ infomsg () {
 
 }
 
-
 #########################################
 #########################################
 #########################################
@@ -154,26 +137,18 @@ infomsg  "$SCRIPTNAME started on `date`"
 # clean old directories, too many dependencies.
 clean_directories
 
-
 if [ ! -d $PREFIX ] 
 then 
-    mkdir -p $PREFIX
-    mkdir $PREFIX/bin
+    sudo mkdir -p $PREFIX
 fi
 
 if [ ! -d $SRC ]
 then
-    mkdir $SRC 
+    mkdir -p $SRC 
 fi
 
+sudo chmod -R ugo+rwx $PREFIX
 
-if [ ! -d $BUILD ]
-then
-    mkdir $BUILD
-fi
-
-#      command="gpg -q --recv-keys --keyserver pgp.mit.edu $i"
-#      command="gpg --import gnu-keyring.gpg"
 # Update gnu keyring
       command="wget -nv -O $GPG_KEYRING ftp://ftp.gnu.org/gnu/gnu-keyring.gpg"
       excmd "$command"
@@ -182,7 +157,11 @@ fi
 ############################################################
 # change to SRC directory and download needed distributions.
 ############################################################
-cd $SRC
+
+command="mkdir -p $SRC/Dist"
+excmd "$command"
+command="cd $SRC/Dist"
+excmd "$command"
 
 # the ubiquitous gnu compiler collection (gcc)
 infomsg "wget -nv gcc $GCC_VERSION - gnu compiler"
@@ -194,11 +173,11 @@ then
     command="wget -nv ftp://ftp.gnu.org/gnu/gcc/gcc-$GCC_VERSION/gcc-$GCC_VERSION.tar.bz2.sig"
     excmd "$command"
 fi
-# command="gpg -q --keyring gnu-keyring.gpg --verify gcc-$GCC_VERSION.tar.bz2.sig"
+pwd
 command="$GPG_PRELUDE gcc-$GCC_VERSION.tar.bz2.sig"
 excmd "$command"
 
-# binutils is  as  and  ld  and others for gnu gcc
+# binutils is:  as, ld  and others for gnu gcc
 infomsg "wget -nv binutils $BINUTILS_VERSION - utilities for cross compiling"
 if [ ! -e binutils-$BINUTILS_VERSION.tar.bz2 ] || [ ! -e binutils-$BINUTILS_VERSION.tar.bz2.sig ];
 then
@@ -209,14 +188,6 @@ then
 fi
 command="$GPG_PRELUDE binutils-$BINUTILS_VERSION.tar.bz2.sig"
 excmd "$command"
-
-# get expat XML parse libs for gdb
-infomsg "wget -nv expat version: $EXPAT_VERSION - expat XML parse libs for gdb"
-if  [ ! -e expat-$EXPAT_VERSION.tar.gz ];
-then
-    command="wget -nv http://downloads.sourceforge.net/expat/expat-$EXPAT_VERSION.tar.gz"
-    excmd "$command"
-fi
 
 # get gdb
 infomsg "wget -nv gdb $GDB_VERSION - gnu debugger"
@@ -247,161 +218,137 @@ then
     excmd "$command"
 fi
 
-
-# get insight debugger
-#if  [ ! -e insight-$INSIGHT_VERSION.tar.bz2 ]
-#then
-#    wget -nv ftp://sourceware.org/pub/insight/releases/insight-$INSIGHT_VERSION.tar.bz2
-#    wget -nv ftp://sourceware.org/pub/insight/releases/md5.sum
-#fi
-#SUM=`cat md5.sum | sed 's/ .*//'`
-#checkmd5=`md5sum insight-6.7.1.tar.bz2 | sed 's/ .*//'`
-#infomsg
-#if [ "$checkmd5" != "$SUM" ]
-#then
-#    infomsg -e $boldtext$redtext"The checksums do not match." $normaltext
-#    exit 1
-#fi
-
-
 ########################################################
 # cd to build directory and unpack.
 ########################################################
-cd $BUILD
-command="tar -xzf $SRC/newlib-$NEWLIB_VERSION.tar.gz"
+command="cd $SRC"
 excmd "$command"
 
-command="tar -xjf $SRC/binutils-$BINUTILS_VERSION.tar.bz2"
+command="tar -xvjf Dist/binutils-$BINUTILS_VERSION.tar.bz2"
 excmd "$command"
 
-command="tar -xjf $SRC/gcc-$GCC_VERSION.tar.bz2"
+command="tar -xvjf Dist/gcc-$GCC_VERSION.tar.bz2"
 excmd "$command"
 
-command="tar -xzf $SRC/expat-$EXPAT_VERSION.tar.gz"
+command="tar -xvjf Dist/gdb-$GDB_VERSION.tar.bz2"
 excmd "$command"
 
-command="tar -xjf $SRC/gdb-$GDB_VERSION.tar.bz2"
+command="tar -xvzf Dist/newlib-$NEWLIB_VERSION.tar.gz"
 excmd "$command"
 
-#tar -xjf $SRC/insight-$INSIGHT_VERSION.tar.bz2
-#check_exit $? "tar -xjf $SRC/insight-$INSIGHT_VERSION.tar.bz2"
-
-
-mkdir $BUILD/binutils
-mkdir $BUILD/newlib
-mkdir $BUILD/gcc
-mkdir $BUILD/gcc2
-mkdir $BUILD/expat
-mkdir $BUILD/gdb
-#mkdir $BUILD/insight
-
-mkdir $PREFIX/info
-mkdir $PREFIX/info/dir
-mkdir $PREFIX/info/dir/dir
-
-export PATH=$PREFIX/bin:$PATH
-infomsg "path is now: $PATH"
+command="cp Dist/t-arm-elf gcc-$GCC_VERSION/gcc/config/arm/t-arm-elf"
+excmd "$command"
 
 ##############################################
 # start configuring and compiling tools
 ##############################################
 
+### build dependencies (incomplete-maybe not all) ##############################
+infomsg "Resolve build dependencies. Install expat - aptitude requires sudo access"
+
+command="sudo aptitude install texinfo libexpat1 libexpat1-dev"
+excmd "$command"
+
 #### BINUTILS #################################
 
-infomsg "binutils"
-cd $BUILD/binutils
-
-command="$BUILD/binutils-$BINUTILS_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft  --enable-languages=\"c,c++\" "
+infomsg "Build binutils"
+command="mkdir -p $SRC/target/arm-elf/binutils"
 excmd "$command"
 
-command="$MAKE_CMD"
+command="cd $SRC/target/arm-elf/binutils"
 excmd "$command"
 
-command="$MAKE_CMD install"
+command="$SRC/binutils-$BINUTILS_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft"
+excmd "$command"
+
+command="$MAKE_CMD all"
+excmd "$command"
+
+command="$sudo $MAKE_CMD install"
 excmd "$command"
 
 ##### GCC ################################
 
+export PATH=$PATH:$PREFIX/bin
 
 infomsg "Build gcc"
-cd $BUILD/gcc
-
-command="$BUILD/gcc-$GCC_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft  --enable-languages=\"c,c++\" "
+command="mkdir -p $SRC/target/arm-elf/gcc"
 excmd "$command"
 
+command="cd $SRC/target/arm-elf/gcc"
+excmd "$command"
+
+command="sudo $SRC/gcc-4.2.1/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft --enable-languages=\"c,c++\" --with-newlib --with-headers=../../../newlib-$NEWLIB_VERSION/newlib/libc/include"
+excmd "$command"
 
 command="$MAKE_CMD all-gcc"
 excmd "$command"
-command="$MAKE_CMD install-gcc"
+command="$sudo $MAKE_CMD install-gcc"
 excmd "$command"
-
 
 ###### NEWLIB ###############################
 
+# export PATH=$PATH:$PREFIX/bin
+echo $PATH
+
 infomsg "Build newlib"
-cd $BUILD/newlib
-
-command="$BUILD/newlib-$NEWLIB_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft"
+command="mkdir -p $SRC/target/arm-elf/newlib"
 excmd "$command"
 
-command="$MAKE_CMD"
+command="cd $SRC/target/arm-elf/newlib"
 excmd "$command"
 
-command="$MAKE_CMD install"
+#info "replacing makeinfo with which makeinfo"
+#if [ -e $SRC/newlib-$NEWLIB_VERSION/missing ]
+#    then
+#        pushd $SRC/newlib-$NEWLIB_VERSION
+#        command="rm $SRC/newlib-$NEWLIB_VERSION/missing"
+#        excmd "$command"
+#        command="ln -s $(which makeinfo) missing"
+#        excmd "$command"
+#        popd
+#    fi
+
+command="$SRC/newlib-$NEWLIB_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft"
+excmd "$command"
+
+command="$MAKE_CMD all"
+excmd "$command"
+
+# pass PATH into sudo environment so /opt/cross/bin is included
+info "install newlib"
+echo "path is: $PATH"
+command="sudo env PATH=$PATH make install"
 excmd "$command"
 
 #####  GCC2 ################################
 
 infomsg "Build gcc2"
-cd $BUILD/gcc2
+command="cd $SRC/target/arm-elf/gcc"
 
-command="$BUILD/gcc-$GCC_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft --enable-languages=\"c,c++\" --with-newlib --with-headers=$BUILD/newlib-$NEWLIB_VERSION/newlib/libc/include"
+command="$MAKE_CMD all"
 excmd "$command"
 
-command="$MAKE_CMD"
+info "install gcc2"
+command="sudo env PATH=$PATH $MAKE_CMD install"
 excmd "$command"
-
-command="$MAKE_CMD install"
-excmd "$command"
-
-### expat ##############################
-infomsg "Build expat"
-cd $BUILD/expat
-
-command="$BUILD/expat-$EXPAT_VERSION/configure --prefix=$PREFIX"
-excmd "$command"
-
-command="$MAKE_CMD"
-excmd "$command"
-
-command="$MAKE_CMD install"
-excmd "$command"
-
 ####  GDB  #################################
 
 infomsg "Build gdb"
-cd $BUILD/gdb
+command="mkdir -p $SRC/target/arm-elf/gdb"
+excmd $command
 
-command="$BUILD/gdb-$GDB_VERSION/configure --target=arm-elf --prefix=$PREFIX --with-libexpat-prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft"
+command="cd $SRC/target/arm-elf/gdb"
+excmd $command
+
+command="$SRC/gdb-$GDB_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft"
 excmd "$command"
 
-command="$MAKE_CMD"
+command="$MAKE_CMD all"
 excmd "$command"
 
-command="$MAKE_CMD install"
+command="sudo env PATH=$PATH $MAKE_CMD install"
 excmd "$command"
-
-###  INSIGHT ##################################
-
-#infomsg "Build insight"
-#cd $BUILD/insight
-#rm -rf *
-#command="$BUILD/insight-$INSIGHT_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft  --with-newlib --with-headers=$BUILD/newlib-$NEWLIB_VERSION/newlib/libc/include"
-#excmd "$command"
-#command="$MAKE_CMD"
-#excmd "$command"
-#command="$MAKE_CMD install"
-#excmd "$command"
 
 echo
 echo
@@ -413,7 +360,8 @@ echo ############################################################
 echo
 echo
 
-
+sudo chmod -R ugo-w $PREFIX
 infomsg "$SCRIPTNAME ended on `date`"
 
 exit 0
+
