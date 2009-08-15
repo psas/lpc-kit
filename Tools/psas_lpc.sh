@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # This script calls scripts to set up an environment
 # for working with LPC2148 on the olimex board.
 
@@ -95,9 +94,9 @@ excmd "$command"
 #####
 # Step 4
 # call psas_eclipse.sh
-infomsg "Installing Eclipse"
+#infomsg "Installing Eclipse"
 command="$PREFIX/psas_eclipse.sh >& psas_eclipse.log"
-excmd "$command"
+#excmd "$command"
 
 
 echo "=============="

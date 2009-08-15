@@ -1,29 +1,24 @@
 #!/bin/bash
 
-
 ##
 # This script builds the open ocd (On Chip Debugger)
 # environment. 
-# 1) run kftdlib.sh first
+# 1) run psas_ftdilib.sh first
 # 2) Download ocd software.
 # Reference: http://bec-systems.com/web/content/view/74/9/
 #
-# USAGE: kocd.sh (-i | -u) [-h]
+# USAGE: psas_ocd.sh (-i ) [-h]
 #            The arguments to use are:
 #           -h: long help message
 #           -i: Attempt an install of openOCD
-#           -u: Attempt an uninstall of openOCD
-#
-# $Id$
-#
 #
 ##
-
 
 #####################################
 # some utility vars
 
 #status
+WHOAMI=`whoami`
 SUCCESS=0
 FAIL=42
 SCRIPTNAME=`basename $0`
@@ -45,24 +40,15 @@ boldtext="\033[1m"
 normaltext="\033[0m"
 
 
-
 ############################
 #INSTALL DIRECTORIES
-board="2148"
-export PREFIX=$HOME/lpc-kit
-export OCD=$PREFIX/LPC/$board/OCD
-export BUILD=$OCD/build
-export SRC=$OCD/src
-export LIB=$OCD/lib
-export PROJ_SOURCE=$PREFIX/Sources/OCD
-export DIRS_TO_CLEAN=$SRC
+export SRC=$HOME/lpc-kit/toolchain/ocd-src
+export PREFIX=/opt/psas/ocd
+export DIRS_TO_CLEAN=$PREFIX
 ###########################
 
 echo SRC is $SRC
-echo LIB is $LIB
-echo BUILD is $BUILD
-
-
+echo PREFIX is $PREFIX
 
 #################################################
 #VERSIONS
@@ -70,63 +56,56 @@ echo BUILD is $BUILD
 # environment
 #################################################
 # export OOCD_VERSION=517
-#export OOCD_VERSION=709
+# export OOCD_VERSION=709
 export OOCD_VERSION=1257
-
-###########################
-# other vars
 
 
 ########################################
 ######## FUNCTIONS #####################
+########################################
+
 ######### Exit status check function 
 ## Call with two args, the $? and string (a comment)
 check_exit() {
 
-if [ $1 -ne 0 ] 
-then
-    echo ##############################################################
-    echo -e "$redtext $0 :\tNon-zero return. $2 $normaltext"
-    echo ##############################################################
-    exit 1
-fi
-return 0
+    if [ $1 -ne 0 ] 
+    then
+        echo ##############################################################
+        echo -e "$redtext $0 :\tNon-zero return. $2 $normaltext"
+        echo ##############################################################
+        exit 1
+    fi
+    return 0
 }
-########################################
-
 
 ################################################
 # prints out a standard info message from script
 # call with message string: infomsg "Hello"
-
 infomsg () {
 
-echo "===> $SCRIPTNAME : $1"
+    echo "===> $SCRIPTNAME : $1"
+}
 
-} 
 ################################################
 # Executes command passed as string then evaluates
 # exit value.
 excmd () {
 
-infomsg "Command is: $1"
-eval $command
-check_exit $? "Command is: $1"
-
+    infomsg "Command is: $1"
+    eval $command
+    check_exit $? "Command is: $1"
 }
 
 ### Clean directories ##
-
 clean_directories () {
-
-for i in $DIRS_TO_CLEAN
-do
-    if [ -e $i ]
-    then
-	command="rm -rf $i"
-	excmd "$command"
-    fi
-done
+    for i in $DIRS_TO_CLEAN
+    do
+        if [ -e $i ]
+        then
+            command="sudo rm -rf $i"
+            excmd "$command"
+        fi
+    done
 }
 
 ################################################
@@ -134,10 +113,10 @@ done
 infohelp () {
     echo
     echo "USAGE: $SCRIPTNAME -i [-h]
-            The arguments to use are:
-           -h: long help message
-           -i: Attempt an install of openOCD"
-          
+    The arguments to use are:
+    -h: long help message
+    -i: Attempt an install of openOCD"
+
     echo
 }
 ################################################
@@ -156,60 +135,42 @@ help=0
 
 while [ $# -gt 0 ]
 do
-  case $1
-  in
-#    -u)
-#      undo=1
-#      shift 1
-#    ;;
+    case $1
+        in
 
-    -i)
-      install=1
-      shift 1
-    ;;
+        -i)
+        install=1
+        shift 1
+        ;;
 
 
-   -h)
-      help=1
-      shift 1
-    ;;
+        -h)
+        help=1
+        shift 1
+        ;;
 
 
-#    -g)
- #     filter=$2
- #     shift 2
- #   ;;
-
-
-#    -ip)
-#      address=$2
-#      shift 2
-#    ;;
-
-
-    *)
-      infohelp
-      shift 1
-    ;;
-  esac
+        *)
+        infohelp
+        shift 1
+        ;;
+    esac
 done
-
-
 
 if [ "$help" -eq 1 ]; then
     infohelp
 
     echo "    
-install openocd - Additional Info 
-                  http://bec-systems.com/web/content/view/74/9/,
-                  http://www.openhardware.net/Embedded_ARM/OpenOCD_JTAG/
-1. svn checkout svn://svn.berlios.de/openocd/trunk openocd
-2. cd openocd
-3. ./bootstrap
-4. ./configure --enable-ft2232_ftd2xx
-5. make
-6. make install
-"
+    install openocd - Additional Info 
+    http://bec-systems.com/web/content/view/74/9/,
+    http://www.openhardware.net/Embedded_ARM/OpenOCD_JTAG/
+    1. svn checkout svn://svn.berlios.de/openocd/trunk openocd
+    2. cd openocd
+    3. ./bootstrap
+    4. ./configure --enable-ft2232_ftd2xx
+    5. make
+    6. make install
+    "
 
     exit $FAIL
 elif [ "$install" -eq 1 ]; then
@@ -226,25 +187,37 @@ fi
 ###########################
 # lpc environment
 
+infomsg "listing of ocd source directory"
+if [ -d $SRC ]; then
+    command="ls $SRC"
+    excmd "$command"
+fi
+
 # backup old openocd...
 newdir=$SRC.$DAY$MONTH$YEAR.$TIME
 if [ -d $SRC ]; then
- command="cp -r $SRC $newdir"
- excmd "$command"
+    command="cp -r $SRC $newdir"
+    excmd "$command"
 fi
 
 # clean old directories, too many dependencies.
-    clean_directories
-
+clean_directories
 
 # make new directories
-for i in $PREFIX $BUILD $SRC $LIB $PROJ_SOURCE
+for i in $PREFIX $SRC
 do
     if [ ! -d $i ]; then
-	infomsg "creating $i"
-	mkdir -p $i
+        infomsg "creating $i"
+        command="sudo mkdir -p $i"
+        excmd "$command"
     fi
+    command="sudo chmod -R ugo+rwx $i"
+    excmd "$command"
 done
+
+command="sudo chown -R $WHOAMI $SRC"
+command="sudo chgrp -R $WHOAMI $SRC"
+excmd "$command"
 
 ##########################
 ### retrieve the software
@@ -270,68 +243,62 @@ if [ "$install" -eq 1 ]; then
     export LDFLAGS
 
     # get openocd software
-
     # decide whether local copy of software is up to date.
- 
     infomsg "Request to install openocd v. $OOCD_VERSION"
 
-    if [ ! -d $PROJ_SOURCE/openocd ]; then
-        pushd $PROJ_SOURCE
-       infomsg "No existing version: attempting checkout of new version: $OCD_VERSION"
-       command="svn checkout -r $OOCD_VERSION svn://svn.berlios.de/openocd/trunk openocd"
-       excmd "$command"
+    if [ ! -d $SRC/openocd ]; then
+        pushd $SRC
+        infomsg "No existing version: attempting checkout of new version: $OCD_VERSION"
+        command="svn checkout -r $OOCD_VERSION svn://svn.berlios.de/openocd/trunk openocd"
+        excmd "$command"
         popd
     fi
 
     # what version is in $PROJ_SOURCE right now?
-    current_ocd_version=`svn info  $PROJ_SOURCE/openocd | grep Revision | awk '{print $2}'`
+    current_ocd_version=`svn info  $SRC/openocd | grep Revision | awk '{print $2}'`
 
-    infomsg "open ocd version in $PROJ_SOURCE (from svn) is: $current_ocd_version"
+    infomsg "open ocd version in $SRC (from svn) is: $current_ocd_version"
 
     if [ $current_ocd_version -ne $OOCD_VERSION ]; then
-     pushd $PROJ_SOURCE
-     
-     # backup old openocd...
-     newdir=openocd.ver-$current_ocd_version
-     command="cp -r $SRC $newdir"
-     excmd "$command"
+        pushd $SRC
 
-     infomsg "Local version ($PROJ_SOURCE/openocd) out of date, attempting checkout of new version: $OCD_VERSION"
-     command="svn checkout -r $OOCD_VERSION svn://svn.berlios.de/openocd/trunk openocd"
-     excmd "$command"
-     popd
+        # backup old openocd...
+        newdir=openocd.ver-$current_ocd_version
+        command="cp -r $SRC $newdir"
+        excmd "$command"
+
+        infomsg "Local version ($SRC/openocd) out of date, attempting checkout of new version: $OCD_VERSION"
+        command="svn checkout -r $OOCD_VERSION svn://svn.berlios.de/openocd/trunk openocd"
+        excmd "$command"
+        popd
     fi
-
-    command="cp -r $PROJ_SOURCE/openocd ."
-    excmd "$command"
 
     pushd $SRC/openocd
 
     command="./bootstrap"
     excmd "$command"
 
-    command="./configure --enable-ft2232_ftd2xx --prefix=$OCD"
-#    command="./configure --enable-ft2232_libftd2xx --prefix=$OCD"
+    command="./configure --enable-ft2232_ftd2xx --prefix=$PREFIX"
+    #    command="./configure --enable-ft2232_libftd2xx --prefix=$PREFIX"
     excmd "$command"
 
     command="make -j2"
     excmd "$command"   
     command="make install"
     excmd "$command"
-
-
 fi
 
-
-
-
+# remove write permissions from /opt/psas
+for i in "/opt/psas" $PREFIX $SRC
+do
+    if [ -d $i ]; then
+        infomsg "changing permissions on $i"
+        command="sudo chmod -R ugo-w $i"
+        excmd "$command"
+    fi
+done
 
 ################# END OF openOCD ################################
-
-##############################################
-
-
-
 
 echo ############################################################
 echo ############################################################
@@ -339,7 +306,9 @@ echo -e "$greentext $boldtext Done with $0 $normaltext"
 echo ############################################################
 echo ############################################################
 
-
 infomsg "$SCRIPTNAME ended on `date`"
+
+echo
+echo
 
 exit $SUCCESS

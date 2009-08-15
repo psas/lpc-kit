@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 ##
 # This script gathers and compiles tools for
 # cross compiling and developing on the
@@ -8,7 +7,7 @@
 #
 # There are alternate methods on the psas website:
 # http://psas.pdx.edu/OlimexLPC2148Setup/
-#   This script is modeled after the secton:
+#   This script is modeled after the section:
 #   "Alternate Setup under Debian Linux" from
 #   Bdale Garbee.
 ##
@@ -58,7 +57,7 @@ export GCC_VERSION=4.2.1
 
 # http://www.gnu.org/software/binutils/
 export BINUTILS_VERSION=2.19
-#export BINUTILS_VERSION=2.17
+#export BINUTILS_VERSION=2.17 # does not compile with gcc 4.3
 
 # http://sourceware.org/gdb/
 export GDB_VERSION=6.6
@@ -66,7 +65,7 @@ export GDB_VERSION=6.6
 # http://sourceware.org/newlib/
 export NEWLIB_VERSION=1.17.0
 #export NEWLIB_VERSION=1.16.0
-#export NEWLIB_VERSION=1.15.0
+#export NEWLIB_VERSION=1.15.0  # makeinfo madness in this version
 
 export DIRS_TO_CLEAN="$PREFIX/*\
                       $SRC/target\
@@ -102,9 +101,7 @@ excmd () {
 
 }
 
-
 ### Clean directories 
-
 clean_directories () {
 
 for i in $DIRS_TO_CLEAN
@@ -128,9 +125,8 @@ infomsg () {
 
 #########################################
 #########################################
-#########################################
-
 # start work
+#########################################
 
 infomsg  "$SCRIPTNAME started on `date`"
 
@@ -150,8 +146,8 @@ fi
 sudo chmod -R ugo+rwx $PREFIX
 
 # Update gnu keyring
-      command="wget -nv -O $GPG_KEYRING ftp://ftp.gnu.org/gnu/gnu-keyring.gpg"
-      excmd "$command"
+command="wget -nv -O $GPG_KEYRING ftp://ftp.gnu.org/gnu/gnu-keyring.gpg"
+excmd "$command"
 
 
 ############################################################
@@ -163,7 +159,7 @@ excmd "$command"
 command="cd $SRC/Dist"
 excmd "$command"
 
-# the ubiquitous gnu compiler collection (gcc)
+# gcc
 infomsg "wget -nv gcc $GCC_VERSION - gnu compiler"
 if [ ! -e gcc-$GCC_VERSION.tar.bz2 ] || [ ! -e gcc-$GCC_VERSION.tar.bz2.sig ];
 then
@@ -288,26 +284,12 @@ excmd "$command"
 
 ###### NEWLIB ###############################
 
-# export PATH=$PATH:$PREFIX/bin
-echo $PATH
-
 infomsg "Build newlib"
 command="mkdir -p $SRC/target/arm-elf/newlib"
 excmd "$command"
 
 command="cd $SRC/target/arm-elf/newlib"
 excmd "$command"
-
-#info "replacing makeinfo with which makeinfo"
-#if [ -e $SRC/newlib-$NEWLIB_VERSION/missing ]
-#    then
-#        pushd $SRC/newlib-$NEWLIB_VERSION
-#        command="rm $SRC/newlib-$NEWLIB_VERSION/missing"
-#        excmd "$command"
-#        command="ln -s $(which makeinfo) missing"
-#        excmd "$command"
-#        popd
-#    fi
 
 command="$SRC/newlib-$NEWLIB_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft"
 excmd "$command"
@@ -317,7 +299,6 @@ excmd "$command"
 
 # pass PATH into sudo environment so /opt/cross/bin is included
 info "install newlib"
-echo "path is: $PATH"
 command="sudo env PATH=$PATH make install"
 excmd "$command"
 
@@ -332,6 +313,7 @@ excmd "$command"
 info "install gcc2"
 command="sudo env PATH=$PATH $MAKE_CMD install"
 excmd "$command"
+
 ####  GDB  #################################
 
 infomsg "Build gdb"
@@ -362,6 +344,10 @@ echo
 
 sudo chmod -R ugo-w $PREFIX
 infomsg "$SCRIPTNAME ended on `date`"
+
+echo
+echo
+echo
 
 exit 0
 
