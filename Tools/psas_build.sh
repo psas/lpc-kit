@@ -246,7 +246,7 @@ excmd "$command"
 ### build dependencies (incomplete-maybe not all) ##############################
 infomsg "Resolve build dependencies. Install expat - aptitude requires sudo access"
 
-command="sudo aptitude install texinfo libexpat1 libexpat1-dev"
+command="sudo aptitude -y install texinfo libexpat1 libexpat1-dev"
 excmd "$command"
 
 #### BINUTILS #################################
