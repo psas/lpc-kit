@@ -42,7 +42,7 @@ normaltext="\033[0m"
 #INSTALL DIRECTORIES
 board="2148"
 export SRC=$HOME/toolchain/ftdilib
-export PREFIX=/opt/psas/ftdilib
+export PREFIX=/opt/ftdilib
 export LIB=$PREFIX/lib
 export DIRS_TO_CLEAN="$PREFIX $SRC $LIB"
 

@@ -43,7 +43,7 @@ normaltext="\033[0m"
 ############################
 #INSTALL DIRECTORIES
 export SRC=$HOME/lpc-kit/toolchain/ocd-src
-export PREFIX=/opt/psas/ocd
+export PREFIX=/opt/ocd
 export DIRS_TO_CLEAN=$PREFIX
 ###########################
 
@@ -288,8 +288,8 @@ if [ "$install" -eq 1 ]; then
     excmd "$command"
 fi
 
-# remove write permissions from /opt/psas
-for i in "/opt/psas" $PREFIX $SRC
+# remove write permissions from /opt/
+for i in "/opt"
 do
     if [ -d $i ]; then
         infomsg "changing permissions on $i"
