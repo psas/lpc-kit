@@ -95,7 +95,7 @@ excmd "$command"
 # Step 4
 # call psas_eclipse.sh
 #infomsg "Installing Eclipse"
-command="$PREFIX/psas_eclipse.sh >& psas_eclipse.log"
+#command="$PREFIX/psas_eclipse.sh >& psas_eclipse.log"
 #excmd "$command"
 
 
