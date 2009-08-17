@@ -37,6 +37,7 @@ int main() {
 
     if(watchdog_timeout_flag == 1) {
 	DBG("Watchdog reset\n");
+	DBG("Woof!\n");
 	WATCHDOG_CLEAR_TIMEOUT_FLAG;
 
 	// debug info
@@ -67,6 +68,7 @@ int main() {
 	DBG("Feed the dog.\n");
 	watchdog_feed(); // copies from timer const to timer.
     }
+	DBG("No more food!\n");
 
     while(1);
 

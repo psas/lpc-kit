@@ -8,7 +8,6 @@ debug_level 1
 
 # stop
 reset halt
-halt
 
 # log file
 log_output write_flash.log

@@ -49,7 +49,7 @@ int main() {
      *                 U16 year) {
      */
 
-    rtc_setTime(0,42,20,2,1,2009);
+    rtc_setTime(0,25,17,16,8,2009);
 
     //    CIIR = (0x2); // interrupt every minute.
     CIIR = (0x1); // interrupt every second.

@@ -2,14 +2,13 @@
 
 # Defaults build directories below, modify or override if the directory structure changes
 # LPC_DEV - location of PSAS Dev tree - the top-level directory lpc-kit/
-LPC_DEV		= ../../../..
+LPC_DEV		= /opt/cross
 # LPC_PROJ - location of projects - i.e. lpc-kit/Dev/2148/
 LPC_PROJ	= ../..
 
-
-
 PROJECT		= isr
 TYPE		= 2148
+GCC_VERSION     = 4.2.1
 
 CC		= arm-elf-gcc
 LD		= arm-elf-ld -v
@@ -18,11 +17,11 @@ AS		= arm-elf-as
 CP		= arm-elf-objcopy
 OD		= arm-elf-objdump
 
-LD_LIB1         = ${LPC_DEV}/LPC/2148/arm-elf/lib
-LD_LIB2         = ${LPC_DEV}/LPC/2148/lib/gcc/arm-elf/4.3.2
-INCLUDE-SYS     = ${LPC_DEV}/LPC/2148/arm-elf/include
+LD_LIB1         = ${LPC_DEV}/arm-elf/lib
+LD_LIB2         = ${LPC_DEV}/lib/gcc/arm-elf/${GCC_VERSION}
+INCLUDE-SYS     = ${LPC_DEV}/include
 INCLUDE-LPC	= ${LPC_PROJ}/libs-lpc/src/include
-CFLAGS		= -I./include -I${INCLUDE-LPC} -I{INCLUDE-SYS} -c -O0 -DDEBUG -mcpu=arm7tdmi-s -Wall -fno-common -g
+CFLAGS		= -I./include -I${INCLUDE-LPC} -I${INCLUDE-SYS} -c -O0 -DDEBUG -mcpu=arm7tdmi-s -Wall -fno-common -g
 AFLAGS		= -g  -ahls
 ASFLAGS		= -S -c -g -I./ -I${INCLUDE-LPC}
 LSTFLAGS	= -c -g -I./ -I${INCLUDE-LPC} -Wa,-a,-ad
