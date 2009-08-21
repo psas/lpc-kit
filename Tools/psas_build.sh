@@ -50,29 +50,30 @@ export PREFIX=/opt/cross
 # Some newer versions are not always compatible with
 # other tools or older versions...
 #################################################
-# http://gcc.gnu.org/
+
+# gcc
 #export GCC_VERSION=4.3.2
 #export GCC_VERSION=4.2.3
 export GCC_VERSION=4.2.1
 
-# http://www.gnu.org/software/binutils/
+# binutils
 export BINUTILS_VERSION=2.19
 #export BINUTILS_VERSION=2.17 # does not compile with gcc 4.3
 
-# http://sourceware.org/gdb/
+# gdb
 export GDB_VERSION=6.6
 
-# http://sourceware.org/newlib/
+# newlib
 export NEWLIB_VERSION=1.17.0
 #export NEWLIB_VERSION=1.16.0
 #export NEWLIB_VERSION=1.15.0  # makeinfo madness in this version
 
 export DIRS_TO_CLEAN="$PREFIX/*\
-                      $SRC/target\
-                      $SRC/gcc-*\
-                      $SRC/newlib-*\
-                      $SRC/binutils-*\
-                      $SRC/gdb-*"
+$SRC/target\
+$SRC/gcc-*\
+$SRC/newlib-*\
+$SRC/binutils-*\
+$SRC/gdb-*"
 
 ######## FUNCTIONS #####################
 
@@ -80,14 +81,14 @@ export DIRS_TO_CLEAN="$PREFIX/*\
 ## Call with two args, the $? and string (a comment)
 check_exit() {
 
-if [ $1 -ne 0 ] 
-then
-    echo ############################################################
-    echo -e "$redtext $boldtext Non-zero return from $2 $normaltext"
-    echo ############################################################
-    exit 1
-fi
-return 0
+    if [ $1 -ne 0 ] 
+    then
+        echo ############################################################
+        echo -e "$redtext $boldtext Non-zero return from $2 $normaltext"
+        echo ############################################################
+        exit 1
+    fi
+    return 0
 }
 
 ################################################
@@ -104,13 +105,13 @@ excmd () {
 ### Clean directories 
 clean_directories () {
 
-for i in $DIRS_TO_CLEAN
-do
-    if [ -e $i ]
-    then
-	sudo rm -rf $i
-    fi
-done
+    for i in $DIRS_TO_CLEAN
+    do
+        if [ -e $i ]
+        then
+            sudo rm -rf $i
+        fi
+    done
 }
 
 ################################################
