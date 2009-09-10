@@ -14,7 +14,9 @@ spawn telnet "$host" "$port";
 
 expect ">"  ;# prompt
 
-send "script $cwd/oocd_flash_lpc2148.script\r";
+# send "script $cwd/oocd_flash_lpc2148.script\r";
+
+send "script $cwd/oocd_flash_lpc2378.script\r";
 
 interact;
 
