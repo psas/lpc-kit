@@ -5,7 +5,7 @@
 
 ############################
 #INSTALL DIRECTORIES
-PREFIX=$HOME/lpc-kit/Tools
+PREFIX=$HOME/Projects/lpc-kit/Tools
 
 #####################################
 # some utility vars

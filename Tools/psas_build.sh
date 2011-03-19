@@ -42,8 +42,10 @@ normaltext="\033[0m"
 
 ############################
 #INSTALL DIRECTORIES
-export SRC=$HOME/lpc-kit/toolchain/src
+export SRC=$HOME/Projects/lpc-kit/toolchain/src
 export PREFIX=/opt/cross
+
+
 
 #################################################
 # VERSIONS
@@ -243,7 +245,7 @@ excmd "$command"
 ### build dependencies (incomplete-maybe not all) ##############################
 infomsg "Resolve build dependencies. Install expat - aptitude requires sudo access"
 
-command="sudo aptitude -y install texinfo libexpat1 libexpat1-dev"
+command="sudo aptitude -y install texinfo libexpat1 libexpat1-dev libncurses5-dev"
 excmd "$command"
 
 #### BINUTILS #################################
@@ -278,9 +280,10 @@ excmd "$command"
 command="sudo $SRC/gcc-4.2.1/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft --enable-languages=\"c,c++\" --with-newlib --with-headers=../../../newlib-$NEWLIB_VERSION/newlib/libc/include"
 excmd "$command"
 
-command="$MAKE_CMD all-gcc"
+command="sudo $MAKE_CMD all-gcc"
 excmd "$command"
-command="$sudo $MAKE_CMD install-gcc"
+
+command="sudo $MAKE_CMD install-gcc"
 excmd "$command"
 
 ###### NEWLIB ###############################

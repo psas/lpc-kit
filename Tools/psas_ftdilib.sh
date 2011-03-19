@@ -53,6 +53,9 @@ export DIRS_TO_CLEAN="$PREFIX $SRC $LIB"
 # Some newer versions not always compatible with
 # environment
 #################################################
+
+#export FTDI_LINUX_VERSION=1.0.4    # windows only? FT_GetLibraryVersion is required for OCD, only
+                                    # available on windows drivers....
 #export FTDI_LINUX_VERSION=0.4.16
 export FTDI_LINUX_VERSION=0.4.13
 
@@ -82,7 +85,7 @@ clean_directories () {
     do
         if [ -e $i ]
         then
-            rm -rf $i
+            sudo rm -rf $i
         fi
     done
 }
@@ -226,7 +229,6 @@ do
         command="sudo mkdir -p $i"
         excmd "$command"
     fi
-    infomsg "here"
     command="sudo chmod -R ugo+rwx $i"
     excmd "$command"
 done
@@ -257,9 +259,13 @@ fi
 ##################################################
 # include files (header files)
 if [ "$install" -eq 1 ]; then
-    cd $LIB
+    cd $LIB/libftd2xx$FTDI_LINUX_VERSION
+    echo `pwd`
     command="sudo cp *.h /usr/local/include/"
     excmd "$command"
+    command="sudo cp *.h /usr/include/"
+    excmd "$command"
+
 elif [ "$uninstall" -eq 1 ]; then
     command="sudo rm /usr/local/include/ftd2xx.h"
     if [ -e  /usr/local/include/ftd2xx.h ]; then
@@ -279,16 +285,20 @@ fi
 #################################################
 # lib files
 if [ "$install" -eq 1 ]; then
-    command="sudo cp libftd2xx.so.0.4.13 /usr/local/lib"
+    cd $LIB/libftd2xx$FTDI_LINUX_VERSION/build/i386
+    command="sudo cp libftd2xx.so.$FTDI_LINUX_VERSION /usr/local/lib"
+    excmd "$command"
+
+    command="sudo chmod ugo+rx  /usr/local/lib/libftd2xx.so.$FTDI_LINUX_VERSION"
     excmd "$command"
 
     if [ !  -h  /usr/local/lib/libftd2xx.so ]; then
-        command="sudo ln -s /usr/local/lib/libftd2xx.so.0.4.13 /usr/local/lib/libftd2xx.so"
+        command="sudo ln -s /usr/local/lib/libftd2xx.so.$FTDI_LINUX_VERSION /usr/local/lib/libftd2xx.so"
         excmd "$command"
     fi
 
     if [ !  -h  /usr/lib/libftd2xx.so ]; then
-        command="sudo ln -s /usr/local/lib/libftd2xx.so.0.4.13 /usr/lib/libftd2xx.so"
+        command="sudo ln -s /usr/local/lib/libftd2xx.so.$FTDI_LINUX_VERSION /usr/lib/libftd2xx.so"
         excmd "$command"
     fi
 
@@ -304,8 +314,8 @@ elif [ "$uninstall" -eq 1 ]; then
         excmd "$command"
     fi
 
-    command="sudo rm /usr/local/lib/libftd2xx.so.0.4.13"
-    if [ -e  /usr/local/lib/libftd2xx.so.0.4.13 ]; then
+    command="sudo rm /usr/local/lib/libftd2xx.so.$FTDI_LINUX_VERSION"
+    if [ -e  /usr/local/lib/libftd2xx.so.$FTDI_LINUX_VERSION ]; then
         excmd "$command"
     fi
 
@@ -318,42 +328,42 @@ fi
 ##############################################################
 # Mess with fstab for usb filesystem
 
-if [ $KERN_MINOR_VERSION -eq 6 ]; then
-    check_fstab=`grep -c usbfs /etc/fstab`
-    if [ $check_fstab -eq 0 ] && [ "$install" -eq 1 ]; then
-        command="sudo sh -c \"echo none /proc/bus/usb usbfs defaults,mode=0666 0 0  >> /etc/fstab\" "
-        excmd "$command"
-    elif    [ $check_fstab -eq 1 ] && [ "$uninstall" -eq 1 ]   ; then
-#        command='sudo umount usbfs'
+#if [ $KERN_MINOR_VERSION -eq 6 ]; then
+#    check_fstab=`grep -c usbfs /etc/fstab`
+#    if [ $check_fstab -eq 0 ] ; then
+#        command="sudo sh -c \"echo none /proc/bus/usb usbfs defaults,mode=0666 0 0  >> /etc/fstab\" "
 #        excmd "$command"
-        command=" sudo sh -c \"sed -e '/^none \/proc\/bus\/usb usbfs defaults,mode=0666 0 0$/d' /etc/fstab > /tmp/fstab.$$\"; sudo mv /etc/fstab /etc/fstab.$YEAR$MONTH$DAY; sudo mv /tmp/fstab.$$ /etc/fstab"
-        excmd "$command"
-    else
-        infomsg "Strange setup...already uninstalled?: install: $install uninstall: $uninstall check_fstab: $check_fstab"
-        #	exit $FAIL	
-    fi
-elif [ $KERN_MINOR_VERSION -eq 4 ]; then
-    check_fstab=`grep -c usbdevfs /etc/fstab`
-    if [ $check_fstab -eq 0 ] && [ "$install" -eq 1 ]; then
-        command="sudo sh -c \"echo none /proc/bus/usb usbdevfs defaults,mode=0666 0 0 >> /etc/fstab\" "
-        excmd "$command"
-    elif  [ $check_fstab -eq 1] && [ "$uninstall" -eq 1 ]; then
-        command='sudo umount usbdevfs'
-        excmd "$command"
-        command=" sudo sh -c \"sed -e '/^none \/proc\/bus\/usb usbdevfs defaults,mode=0666 0 0$/d' /etc/fstab > /tmp/fstab.$$; sudo mv /etc/fstab /etc/fstab.$YEAR$MONTH$DAY; sudo mv /tmp/fstab.$$ /etc/fstab"
-        excmd "$command"
-    else
-        infomsg "Strange setup...already uninstallne?: install: $install uninstall: $uninstall check_fstab: $check_fstab"
-        #	exit $FAIL	
-    fi
-fi
+#    elif    [ $check_fstab -eq 1 ] && [ "$uninstall" -eq 1 ]   ; then
+##        command='sudo umount usbfs'
+##        excmd "$command"
+#        command=" sudo sh -c \"sed -e '/^none \/proc\/bus\/usb usbfs defaults,mode=0666 0 0$/d' /etc/fstab > /tmp/fstab.$$\"; sudo mv /etc/fstab /etc/fstab.$YEAR$MONTH$DAY; sudo mv /tmp/fstab.$$ /etc/fstab"
+#        excmd "$command"
+#    else
+#        infomsg "Strange setup...already uninstalled?: install: $install uninstall: $uninstall check_fstab: $check_fstab"
+#        #	exit $FAIL	
+#    fi
+#elif [ $KERN_MINOR_VERSION -eq 4 ]; then
+#    check_fstab=`grep -c usbdevfs /etc/fstab`
+#    if [ $check_fstab -eq 0 ] && [ "$install" -eq 1 ]; then
+#        command="sudo sh -c \"echo none /proc/bus/usb usbdevfs defaults,mode=0666 0 0 >> /etc/fstab\" "
+#        excmd "$command"
+#    elif  [ $check_fstab -eq 1] && [ "$uninstall" -eq 1 ]; then
+#        command='sudo umount usbdevfs'
+#        excmd "$command"
+#        command=" sudo sh -c \"sed -e '/^none \/proc\/bus\/usb usbdevfs defaults,mode=0666 0 0$/d' /etc/fstab > /tmp/fstab.$$; sudo mv /etc/fstab /etc/fstab.$YEAR$MONTH$DAY; sudo mv /tmp/fstab.$$ /etc/fstab"
+#        excmd "$command"
+#    else
+#        infomsg "Strange setup...already uninstallne?: install: $install uninstall: $uninstall check_fstab: $check_fstab"
+#        #	exit $FAIL	
+#    fi
+#fi
+#
 
-
-check_ldso=`grep -c ^/usr/local/lib$ /etc/ld.so.conf`
-if [ $check_ldso -eq 0 ] && [ "$install" -eq 1 ]; then 
+check_ldso=`sudo grep -c ^/usr/local/lib$ /etc/ld.so.conf`
+if [ ${check_ldso:-0} -eq 0 ] && [ "$install" -eq 1 ]; then 
     command="sudo sh -c \"echo /usr/local/lib >> /etc/ld.so.conf\" "
     excmd "$command"
-elif  [ $check_ldso -eq 1 ] && [ "$uninstall" -eq 1 ]; then
+elif  [ ${check_ldso:-0} -eq 1 ] && [ "$uninstall" -eq 1 ]; then
     command=" sudo sh -c \"sed -e '/\/usr\/local\/lib$/d'  /etc/ld.so.conf > /tmp/ld.so.conf.$$\" ; sudo mv /etc/ld.so.conf /etc/ld.so.conf.$YEAR$MONTH$DAY; sudo mv /tmp/ld.so.conf.$$ /etc/ld.so.conf"
     excmd "$command"
 else

@@ -42,9 +42,9 @@ normaltext="\033[0m"
 
 ############################
 #INSTALL DIRECTORIES
-export SRC=$HOME/lpc-kit/toolchain/ocd-src
+export SRC=$HOME/Projects/lpc-kit/toolchain/
 export PREFIX=/opt/ocd
-export DIRS_TO_CLEAN=$PREFIX
+export DIRS_TO_CLEAN="$PREFIX $SRC/openocd"
 ###########################
 
 echo SRC is $SRC
@@ -100,6 +100,7 @@ excmd () {
 clean_directories () {
     for i in $DIRS_TO_CLEAN
     do
+        echo "Cleaning $i"
         if [ -e $i ]
         then
             command="sudo rm -rf $i"
@@ -187,20 +188,9 @@ fi
 ###########################
 # lpc environment
 
-infomsg "listing of ocd source directory"
-if [ -d $SRC ]; then
-    command="ls $SRC"
-    excmd "$command"
-fi
-
-# backup old openocd...
-newdir=$SRC.$DAY$MONTH$YEAR.$TIME
-if [ -d $SRC ]; then
-    command="cp -r $SRC $newdir"
-    excmd "$command"
-fi
 
 # clean old directories, too many dependencies.
+infomsg "Cleaning directories"
 clean_directories
 
 # make new directories
@@ -243,60 +233,44 @@ if [ "$install" -eq 1 ]; then
     export LDFLAGS
 
     # get openocd software
-    # decide whether local copy of software is up to date.
-    infomsg "Request to install openocd v. $OOCD_VERSION"
+    pushd $SRC
+    command="git clone git://openocd.git.sourceforge.net/gitroot/openocd/openocd"
+    excmd "$command"
+    popd
 
-    if [ ! -d $SRC/openocd ]; then
-        pushd $SRC
-        infomsg "No existing version: attempting checkout of new version: $OCD_VERSION"
-        command="svn checkout -r $OOCD_VERSION svn://svn.berlios.de/openocd/trunk openocd"
-        excmd "$command"
-        popd
-    fi
-
-    # what version is in $PROJ_SOURCE right now?
-    current_ocd_version=`svn info  $SRC/openocd | grep Revision | awk '{print $2}'`
-
-    infomsg "open ocd version in $SRC (from svn) is: $current_ocd_version"
-
-    if [ $current_ocd_version -ne $OOCD_VERSION ]; then
-        pushd $SRC
-
-        # backup old openocd...
-        newdir=openocd.ver-$current_ocd_version
-        command="cp -r $SRC $newdir"
-        excmd "$command"
-
-        infomsg "Local version ($SRC/openocd) out of date, attempting checkout of new version: $OCD_VERSION"
-        command="svn checkout -r $OOCD_VERSION svn://svn.berlios.de/openocd/trunk openocd"
-        excmd "$command"
-        popd
-    fi
-
+    infomsg "moving to $SRC/openocd"
     pushd $SRC/openocd
+
+    # install basic packages
+    command="sudo aptitude -y install libtool automake libftdi-dev libftdi1"
+    excmd "$command"
 
     command="./bootstrap"
     excmd "$command"
 
-    command="./configure --enable-ft2232_ftd2xx --prefix=$PREFIX"
-    #    command="./configure --enable-ft2232_libftd2xx --prefix=$PREFIX"
-    excmd "$command"
+    echo `pwd`
+    command="./configure --enable-maintainer-mode --enable-ft2232_libftdi --prefix=$PREFIX"
+    infomsg "Run : $command"
+    echo `pwd`
+#    excmd "$command"
 
     command="make -j2"
-    excmd "$command"   
+    infomsg "Run: $command"
+#    excmd "$command"   
     command="make install"
-    excmd "$command"
+    infomsg "Run: $command"
+#    excmd "$command"
 fi
 
 # remove write permissions from /opt/
-for i in "/opt"
-do
-    if [ -d $i ]; then
-        infomsg "changing permissions on $i"
-        command="sudo chmod -R ugo-w $i"
-        excmd "$command"
-    fi
-done
+#for i in "/opt"
+#do
+#    if [ -d $i ]; then
+#        infomsg "changing permissions on $i"
+#        command="sudo chmod -R ugo-w $i"
+#        excmd "$command"
+#    fi
+#done
 
 ################# END OF openOCD ################################
 
