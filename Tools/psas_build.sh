@@ -133,6 +133,7 @@ infomsg () {
 #########################################
 
 infomsg  "$SCRIPTNAME started on `date`"
+infomsg "Does not work with gcc version 4.4.3."
 
 # clean old directories, too many dependencies.
 clean_directories
