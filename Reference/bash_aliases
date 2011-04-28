@@ -1,0 +1,26 @@
+
+# these are useful aliases
+
+# find psas tools first in path
+alias psas="export PATH=/opt/cross/bin:/opt/isp:$HOME/Projects/lpc-kit/Tools:$PATH; echo New path is \$PATH"
+
+# openocd 
+alias myocd="sudo openocd -f openocd_lpc2378.cfg"
+
+# expect script to program flash when oocd running
+alias ocdflash="$HOME/Projects/lpc-kit/Tools/lpc_flash.exp"
+
+# program to use with serial I/O programming...
+alias lpc21isp="/opt/isp/lpc21isp -debug -hex -wipe -verify -PHILIPSARM main.hex /dev/ttyS0 38400 12000"
+
+# help on openocd
+alias ocdhelp="google-chrome /usr/share/doc/openocd/openocd.html/index.html"
+
+# gdb
+alias armgdb="arm-elf-gdb --command init.gdb main.out"
+
+# minicom
+alias mc="sudo minicom"
+
+
+

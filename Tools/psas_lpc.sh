@@ -76,20 +76,25 @@ infomsg "Building gcc cross-compilers"
 command="$PREFIX/psas_build.sh >& psas_build.log"
 excmd "$command"
 
-#####
-# Step 2
-# call psas_ftdilib.sh
-#infomsg "Installing ftdi Library"
-#command="$PREFIX/psas_ftdilib.sh -i >& psas_ftdilib.log"
-#excmd "$command"
-
+##
+# step 2 obsolete - no more ftdixxx
 
 #####
 # Step 3
-# call psas_ocd.sh
-infomsg "Installing open on chip debugger (Open Ocd)"
-command="$PREFIX/psas_ocd.sh -i >& psas_ocd.log"
+# install openocd debian package
+infomsg "Installing open-on-chip-debugger package (openocd)"
+command="sudo aptitude -y install openocd expect"
 excmd "$command"
+
+#####
+#####
+#  Alternate Step 3 - build from sources
+# call psas_ocd.sh
+#infomsg "Building open on chip debugger (openocd)"
+#command="$PREFIX/psas_ocd.sh -i >& psas_ocd.log"
+#excmd "$command"
+#####
+#####
 
 #####
 # Step 4
