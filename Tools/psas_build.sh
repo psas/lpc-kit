@@ -12,6 +12,7 @@
 #   Bdale Garbee.
 ##
 
+WHOAMI=`whoami`
 SUCCESS=0
 FAIL=42
 
@@ -335,6 +336,14 @@ excmd "$command"
 
 command="sudo env PATH=$PATH $MAKE_CMD install"
 excmd "$command"
+
+command="cd $SRC; cd .."
+excmd "$command"
+
+command="sudo chown -R $WHOAMI ./*; chgrp -R $WHOAMI ./*"
+excmd "$command"
+
+
 
 echo
 echo

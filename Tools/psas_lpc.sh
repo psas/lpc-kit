@@ -79,9 +79,9 @@ excmd "$command"
 #####
 # Step 2
 # call psas_ftdilib.sh
-infomsg "Installing ftdi Library"
-command="$PREFIX/psas_ftdilib.sh -i >& psas_ftdilib.log"
-excmd "$command"
+#infomsg "Installing ftdi Library"
+#command="$PREFIX/psas_ftdilib.sh -i >& psas_ftdilib.log"
+#excmd "$command"
 
 
 #####
