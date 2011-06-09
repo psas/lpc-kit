@@ -1,16 +1,5 @@
 #!/bin/bash
 
-##
-# This script gathers and compiles tools for
-# cross compiling and developing on the
-# lpc2148 olimex board.
-#
-# There are alternate methods on the psas website:
-# http://psas.pdx.edu/OlimexLPC2148Setup/
-#   This script is modeled after the section:
-#   "Alternate Setup under Debian Linux" from
-#   Bdale Garbee.
-##
 
 WHOAMI=`whoami`
 SUCCESS=0
@@ -247,7 +236,11 @@ excmd "$command"
 ### build dependencies (incomplete-maybe not all) ##############################
 infomsg "Resolve build dependencies. Install expat - aptitude requires sudo access"
 
-command="sudo aptitude -y install texinfo libexpat1 libexpat1-dev libncurses5-dev"
+command="sudo aptitude update"
+excmd "$command"
+
+
+command="sudo aptitude -y install build_essentials texinfo libexpat1 libexpat1-dev libncurses5-dev"
 excmd "$command"
 
 #### BINUTILS #################################
