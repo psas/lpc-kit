@@ -49,11 +49,13 @@ export PREFIX=/opt/cross
 export GCC_VERSION=4.2.1
 
 # binutils
-export BINUTILS_VERSION=2.19
+export BINUTILS_VERSION=2.19.1
+export BINUTILS_VERSION_DOWNLOAD=${BINUTILS_VERSION}a
 #export BINUTILS_VERSION=2.17 # does not compile with gcc 4.3
 
 # gdb
 export GDB_VERSION=6.6
+export GDB_VERSION_DOWNLOAD=6.6a
 
 # newlib
 export NEWLIB_VERSION=1.17.0
@@ -168,27 +170,27 @@ command="$GPG_PRELUDE gcc-$GCC_VERSION.tar.bz2.sig"
 excmd "$command"
 
 # binutils is:  as, ld  and others for gnu gcc
-infomsg "wget -nv binutils $BINUTILS_VERSION - utilities for cross compiling"
-if [ ! -e binutils-$BINUTILS_VERSION.tar.bz2 ] || [ ! -e binutils-$BINUTILS_VERSION.tar.bz2.sig ];
+infomsg "wget -nv binutils $BINUTILS_VERSION_DOWNLOAD - utilities for cross compiling"
+if [ ! -e binutils-$BINUTILS_VERSION_DOWNLOAD.tar.bz2 ] || [ ! -e binutils-$BINUTILS_VERSION_DOWNLOAD.tar.bz2.sig ];
 then
-    command="wget -nv ftp://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2"
+    command="wget -nv ftp://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION_DOWNLOAD.tar.bz2"
     excmd "$command"
-    command="wget -nv ftp://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION.tar.bz2.sig"
+    command="wget -nv ftp://ftp.gnu.org/gnu/binutils/binutils-$BINUTILS_VERSION_DOWNLOAD.tar.bz2.sig"
     excmd "$command"
 fi
-command="$GPG_PRELUDE binutils-$BINUTILS_VERSION.tar.bz2.sig"
+command="$GPG_PRELUDE binutils-$BINUTILS_VERSION_DOWNLOAD.tar.bz2.sig"
 excmd "$command"
 
 # get gdb
-infomsg "wget -nv gdb $GDB_VERSION - gnu debugger"
-if  [ ! -e gdb-$GDB_VERSION.tar.bz2 ] || [ ! -e gdb-$GDB_VERSION.tar.bz2.sig  ];
+infomsg "wget -nv gdb $GDB_VERSION_DOWNLOAD - gnu debugger"
+if  [ ! -e gdb-$GDB_VERSION_DOWNLOAD.tar.bz2 ] || [ ! -e gdb-$GDB_VERSION_DOWNLOAD.tar.bz2.sig  ];
 then
-    command="wget -nv ftp://ftp.gnu.org/gnu/gdb/gdb-$GDB_VERSION.tar.bz2"
+    command="wget -nv ftp://ftp.gnu.org/gnu/gdb/gdb-$GDB_VERSION_DOWNLOAD.tar.bz2"
     excmd "$command"
-    command="wget -nv ftp://ftp.gnu.org/gnu/gdb/gdb-$GDB_VERSION.tar.bz2.sig"
+    command="wget -nv ftp://ftp.gnu.org/gnu/gdb/gdb-$GDB_VERSION_DOWNLOAD.tar.bz2.sig"
     excmd "$command"
 fi
-command="$GPG_PRELUDE gdb-$GDB_VERSION.tar.bz2.sig"
+command="$GPG_PRELUDE gdb-$GDB_VERSION_DOWNLOAD.tar.bz2.sig"
 excmd "$command"
 
 
@@ -214,13 +216,13 @@ fi
 command="cd $SRC"
 excmd "$command"
 
-command="tar -xvjf Dist/binutils-$BINUTILS_VERSION.tar.bz2"
+command="tar -xvjf Dist/binutils-$BINUTILS_VERSION_DOWNLOAD.tar.bz2"
 excmd "$command"
 
 command="tar -xvjf Dist/gcc-$GCC_VERSION.tar.bz2"
 excmd "$command"
 
-command="tar -xvjf Dist/gdb-$GDB_VERSION.tar.bz2"
+command="tar -xvjf Dist/gdb-$GDB_VERSION_DOWNLOAD.tar.bz2"
 excmd "$command"
 
 command="tar -xvzf Dist/newlib-$NEWLIB_VERSION.tar.gz"
