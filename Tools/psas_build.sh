@@ -254,7 +254,7 @@ excmd "$command"
 command="cd $SRC/target/arm-elf/binutils"
 excmd "$command"
 
-command="$SRC/binutils-$BINUTILS_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft"
+command="$SRC/binutils-$BINUTILS_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft --disable-werror"
 excmd "$command"
 
 command="$MAKE_CMD all"
@@ -324,7 +324,7 @@ excmd $command
 command="cd $SRC/target/arm-elf/gdb"
 excmd $command
 
-command="$SRC/gdb-$GDB_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft"
+command="$SRC/gdb-$GDB_VERSION/configure --target=arm-elf --prefix=$PREFIX --enable-interwork --enable-multilib --with-float=soft --disable-werror"
 excmd "$command"
 
 command="$MAKE_CMD all"
